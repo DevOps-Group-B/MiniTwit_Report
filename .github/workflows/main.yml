@@ -24,10 +24,10 @@ jobs:
           build_pdf: true
 
       - name: Rename PDF to comply with naming convention
-        run: mv report/build/Report.pdf report/build/BSc_group_a.pdf
+        run: mv report/build/Report.pdf report/build/BSc_group_b.pdf
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: project-report
-          path: report/build/BSc_group_a.pdf
+          path: report/build/BSc_group_b.pdf
