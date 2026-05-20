@@ -14,9 +14,12 @@
 ## Table of Contents
 - [Group B: Carls ⏰](#group-b-carls-)
   - [Table of Contents](#table-of-contents)
-  - [1. System's Perspective](#1-systems-perspective)
-  - [2. Process' Perspective](#2-process-perspective)
-  - [3. Reflection Perspective](#3-reflection-perspective)
+  - [1 System's Perspective](#1-systems-perspective)
+    - [1.1 Design and Architecture](#11-design-and-architecture)
+    - [1.2 Dependencies](#12-dependencies)
+    - [1.3 Current State of System](#13-current-state-of-system)
+  - [2 Process' Perspective](#2-process-perspective)
+  - [3 Reflection Perspective](#3-reflection-perspective)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
     - [3.3 Trivy Vulnerability Scans and Exception Management (Maintenance \& CI/CD)](#33-trivy-vulnerability-scans-and-exception-management-maintenance--cicd)
@@ -27,17 +30,57 @@
 
 ---
 
-## 1. System's Perspective
-A description and illustration of the:
+## 1 System's Perspective
 
-Design and architecture of your ITU-MiniTwit systems.
-All dependencies of your ITU-MiniTwit systems on all levels of abstraction and development stages. That is, list and briefly describe all technologies and tools you applied and depend on.
-Describe the current state of your systems, for example using results of static analysis and quality assessments.
+### 1.1 Design and Architecture
 
+The ITU-MiniTwit application is written in **C#** using **ASP.NET Core 9.0** with **Entity Framework Core 8.0**, deployed on **DigitalOcean** infrastructure with a **PostgreSQL 16** database backend.
+
+The system implements an **Onion Architecture** pattern (as this project is built on top of the Chirp application from BDSA), organizing the codebase into the following layers:
+- **Domain Layer**: Core business logic and entities
+- **Repository Layer**: Data access abstraction  
+- **Service Layer**: Business logic orchestration
+- **Web Layer**: ASP.NET Razor Pages UI and API endpoints
+
+The production environment is designed for high availability and fault tolerance. External traffic is directed to a DigitalOcean Floating IP, managed via Terraform. This IP routes to an active-passive load balancing tier consisting of two droplets running Nginx and Keepalived. Keepalived monitors the health of the primary Nginx instance via custom TCP probes, in the event of a failure, it automatically reassigns the Floating IP to the secondary load balancer. Nginx handles reverse proxying and TLS termination using Let's Encrypt certificates managed by an ACME companion container.
+
+The active load balancer distributes incoming HTTP traffic across four containerized application instances. These application containers are set up using Ansible and deployed through GitHub Actions. They maintain a connection pool to a dedicated PostgreSQL database droplet. To enforce network security, the database droplet utilizes a restricted firewall that only allows inbound connections from the known application server IPs via `pg_hba.conf`.
+
+The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
+
+!!INSERT FIGURE HERE!!
+
+### 1.2 Dependencies
+
+The system operates on multiple levels of abstraction, each introducing dependencies:
+
+| **Layer** | **Technologies** | **Purpose** |
+|-----------|------------------|-----------|
+| **Application** | C# 9.0, ASP.NET Core 9.0, EF Core 8.0 | Web framework and ORM |
+| **Database** | PostgreSQL 16, Npgsql library (v7.0+) | Relational data storage with async drivers |
+| **Frontend** | Razor Pages, Bootstrap 5, JavaScript | Web UI and client-side interactivity |
+| **Testing** | xUnit 2.4, Playwright 1.40+, Moq 5.0 | Unit, integration, and E2E test frameworks |
+| **Containerization** | Docker, Docker Compose, Chiseled base images | Container runtime |
+| **Infrastructure** | Terraform 1.5+, DigitalOcean | IaC and cloud provisioning |
+| **Configuration Mgmt** | Ansible 2.10+, Jinja2 templates | Server provisioning and state management |
+| **HA/LB** | Nginx 1.18+, Keepalived 2.2.4 | Reverse proxy, TLS termination, failover |
+| **SSL/TLS** | Let's Encrypt, certbot, nginx-proxy, ACME | Certificate provisioning and renewal |
+| **Monitoring** | Prometheus 2.50+, Grafana 11.0+, Node Exporter | Metrics collection and visualization |
+| **Logging** | Grafana Loki 3.5.0, Grafana Alloy 1.0+ | Log aggregation and shipping |
+| **CI/CD** | GitHub Actions, Docker Hub | Build automation and image publishing |
+| **Code Quality** | SonarQube, Codacy, Semgrep, hadolint, dotnet format, Trivy | Static analysis and vulnerability scanning |
+
+### 1.3 Current State of System
+
+The deployment process is fully automated, allowing for frequent releases with specific tagging. Our PostgreSQL 16 database runs efficiently with active connection pooling and automated weekly DigitalOcean snapshots. However, the system relies on a single dedicated droplet for data storage, introducing a single point of failure into an otherwise load-balanced setup.
+
+Our CI/CD setup blocks deployments if high-severity vulnerabilities are found. Currently, we have zero fixable issues in Semgrep or Trivy. We are tracking 25 vulnerabilities in our `.trivyignore` file, but these are all tied to transitive dependencies, where we are already running the newest available versions, meaning no patch currently exists. Additionally, while the system passes our test suite (over 85 unit tests, 20 integration tests, and 10 Playwright E2E tests), we recognize this does not cover every edge case and leaves some blind spots in our application logic.
+
+While the infrastructure is stable, static analysis reports from SonarQube and Codacy show that we have a lot of technical debt. Our SonarQube quality gate is currently failing, primarily due to 11 open security issues, 16 security hotspots, and 766 maintainability issues largely flagged as code "pitfalls" and design convention violations. Similarly, Codacy highlights 24 open issues across the repository. A significant portion of these stem from hardcoded passwords left in our end-to-end test files and Ansible playbooks, C# async methods returning void instead of Tasks, and third-party GitHub Actions in our workflows that are not securely pinned to full commit SHAs. Addressing these static analysis warnings represents the next major step for improving the project.
 
 ---
 
-## 2. Process' Perspective
+## 2 Process' Perspective
 The CI/CD pipeline begins when code is pushed through a pull request. In GitHub Actions, the repository is checked out, .NET is configured, and code quality checks are run with dotnet format and hadolint. Semgrep is also executed to detect common security issues early. After these checks, the project is built with dotnet build, Playwright is installed for end-to-end testing, and xUnit is used for both unit and integration tests. If any step fails, deployment is stopped. When everything passes, Docker images for Prometheus and Grafana are built, scanned with Trivy, and pushed to Docker Hub with a version tag. Finally, GitHub Actions connects to the production server over SSH, pulls the new image, and restarts the container so the updated version goes live.
 
 The Ansible playbook starts by preparing the database server with PostgreSQL; already installed packages are not reinstalled. It also restricts database access to application nodes and creates the MiniTwit database and user. Next, it prepares the web and monitoring hosts by installing Docker, creating shared networks and volumes, and deploying the application alongside Prometheus, Loki, Alloy, Grafana, and the reverse proxy. For high availability, the playbook configures keepalived and failover scripts so the floating IP can move automatically if a node fails.
@@ -53,7 +96,7 @@ We handle availability by running multiple MiniTwit containers behind a reverse 
 
 ---
 
-## 3. Reflection Perspective
+## 3 Reflection Perspective
 ### 3.1 Group Coordination and Task Management (Evolution & Refactoring)
 During the refactoring phases of the system, the primary challenge was falling behind. The structure of the tasks were often interdependent on each other making it hard to delegate tasks out in a way where pair programming could be taken advantage of. An attempt at mob programming with a rotating driver and navigator was made in the beginning but was unsuccessful, as some people would lose focus just listening. Our solution was to limit active development to a maximum of 2-3 team members concurrently while the remaining members would focus on asynchronous tasks like doing the exercises to understand the eventual pull request they would review later. 
 
