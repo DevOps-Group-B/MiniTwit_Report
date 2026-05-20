@@ -3,8 +3,8 @@ name: Build Report PDF
 on:
   push:
     branches:
-      - main 
-  workflow_dispatch: 
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,14 +20,14 @@ jobs:
         uses: baileyjm02/markdown-to-pdf@v1
         with:
           input_dir: report
-          input_file: Report.md
           output_dir: report/build
+          build_pdf: true
 
       - name: Rename PDF to comply with naming convention
-        run: mv report/build/Report.pdf report/build/BSc_group_b.pdf
+        run: mv report/build/Report.pdf report/build/BSc_group_a.pdf
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: project-report
-          path: report/build/BSc_group_b.pdf
+          path: report/build/BSc_group_a.pdf
