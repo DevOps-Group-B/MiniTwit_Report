@@ -24,7 +24,7 @@ jobs:
 
       - name: Convert Markdown to PDF
         run: |
-          pandoc report/Report.md \
+          pandoc report/report.md \
             --from markdown \
             --to pdf \
             --output report/build/BSc_group_b.pdf \
