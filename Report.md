@@ -38,15 +38,17 @@ Describe the current state of your systems, for example using results of static 
 ---
 
 ## 2. Process' Perspective
-This perspective should clarify how code or other artifacts come from idea into the running system and everything that happens on the way.
+The CI/CD pipeline begins when code is pushed through a pull request. In GitHub Actions, the repository is checked out, .NET is configured, and code quality checks are run with dotnet format and hadolint. Semgrep is also executed to detect common security issues early. After these checks, the project is built with dotnet build, Playwright is installed for end-to-end testing, and xUnit is used for both unit and integration tests. If any step fails, deployment is stopped. When everything passes, Docker images for Prometheus and Grafana are built, scanned with Trivy, and pushed to Docker Hub with a version tag. Finally, GitHub Actions connects to the production server over SSH, pulls the new image, and restarts the container so the updated version goes live.
 
-In particular, the following descriptions should be included:
+The Ansible playbook starts by preparing the database server with PostgreSQL; already installed packages are not reinstalled. It also restricts database access to application nodes and creates the MiniTwit database and user. Next, it prepares the web and monitoring hosts by installing Docker, creating shared networks and volumes, and deploying the application alongside Prometheus, Loki, Alloy, Grafana, and the reverse proxy. For high availability, the playbook configures keepalived and failover scripts so the floating IP can move automatically if a node fails.
 
-A complete description and illustration of stages and tools included in the CI/CD pipelines, including deployment and release of your systems.
-How do you monitor your systems and what precisely do you monitor?
-What do you log in your systems and how do you aggregate logs?
-Brief description of how you security hardened your systems.
-How do you handle availability and scaling in your systems?
+Prometheus and Grafana are used to monitor the system. Prometheus scrapes metrics from the application, database, and host machines, while Grafana visualizes the data in dashboards. The main focus is application performance, including request latency, request counts, error rates, database connection usage, CPU, memory, disk, and network usage.
+
+Logging focuses on requests, errors, authentication events, and database-related messages. This makes troubleshooting easier without manual server inspection. Logs are collected centrally with Grafana Alloy and forwarded to Loki, where they can be searched and filtered in Grafana to trace failures and follow specific requests.
+
+We hardened security in both CI/CD and production. In CI/CD we use Semgrep and Trivy to catch insecure code and vulnerable images before deployment. In production Ansible restricts PostgreSQL access to known app nodes, it also removes broad access rules and protects secrets with strict permissions. Further we run containers with reduced privileges and safer defaults to limit the impact of potential attacks.
+
+We handle availability by running multiple MiniTwit containers behind a reverse proxy and using keepalived with a floating IP for failover between load balancer nodes. We handle scaling horizontally by changing the number of application instances in Ansible, which recreates containers one by one to reduce downtime. Monitoring with Prometheus and Grafana allows us to detect issues early and react before users are affected.
 
 
 ---
