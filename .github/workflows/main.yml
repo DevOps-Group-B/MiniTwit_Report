@@ -9,34 +9,51 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug - List files in repo
-        run: ls -R
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Install Pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
 
       - name: Create build directory
         run: mkdir -p report/build
 
-      - name: Install Markdown-PDF
-        run: npm install -g markdown-pdf
-
       - name: Convert Markdown to PDF
         run: |
-          # Konverterer Report.md til Report.pdf
-          markdown-pdf report/Report.md -o report/build/Report.pdf
+          pandoc report/Report.md \
+            --from markdown \
+            --to pdf \
+            --output report/build/BSc_group_b.pdf \
+            --resource-path report \
+            --variable geometry:margin=1in \
+            --variable fontsize=11pt \
+            --variable colorlinks=true \
+            --toc \
+            --toc-depth=3
 
-      - name: Rename PDF to comply with naming convention
-        run: mv report/build/Report.pdf report/build/BSc_group_b.pdf
+      - name: Verify PDF was created
+        run: |
+          if [ ! -f report/build/BSc_group_b.pdf ]; then
+            echo "PDF was not created!"
+            exit 1
+          fi
+          echo "PDF created successfully: $(du -h report/build/BSc_group_b.pdf | cut -f1)"
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: project-report
           path: report/build/BSc_group_b.pdf
+          retention-days: 90
+
+      - name: Commit PDF to repository
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add report/build/BSc_group_b.pdf
+          git diff --staged --quiet || git commit -m "ci: update report PDF [skip ci]"
+          git push
