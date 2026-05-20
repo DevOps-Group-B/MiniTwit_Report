@@ -48,7 +48,7 @@ The architecture also includes systems for monitoring and logging. Prometheus sc
 
 <figure>
   <img src="images/loadbalancer.png" alt="Load balancer architecture">
-  <figcaption>Figure 1: Load balancing with active-passive failover using Nginx, Keepalived, and DigitalOcean Floating IP</figcaption>
+  <figcaption><b>Figur 1:</b> Oversigt over load balancer arkitektur med active-passive failover via Nginx, Keepalived og DigitalOcean Floating IP.</figcaption>
 </figure>
 
 ### 1.2 Dependencies
