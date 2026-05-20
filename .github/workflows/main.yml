@@ -13,18 +13,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug - List files in repo
+        run: ls -R
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
       - name: Create build directory
         run: mkdir -p report/build
 
+      - name: Install Markdown-PDF
+        run: npm install -g markdown-pdf
+
       - name: Convert Markdown to PDF
-        uses: baileyjm02/markdown-to-pdf@v1
-        with:
-          input_dir: report
-          output_dir: report/build
-          build_pdf: true
+        run: |
+          # Konverterer Report.md til Report.pdf
+          markdown-pdf report/Report.md -o report/build/Report.pdf
 
       - name: Rename PDF to comply with naming convention
-        run: mv report/build/*.pdf report/build/BSc_group_b.pdf
+        run: mv report/build/Report.pdf report/build/BSc_group_b.pdf
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
