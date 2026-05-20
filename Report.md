@@ -48,7 +48,10 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
-!!INSERT FIGURE HERE!!
+<figure>
+  <img src="images/loadbalancer.png" alt="Load balancer architecture">
+  <figcaption>Figure 1: Load balancing with active-passive failover using Nginx, Keepalived, and DigitalOcean Floating IP</figcaption>
+</figure>
 
 ### 1.2 Dependencies
 
