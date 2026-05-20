@@ -23,10 +23,8 @@
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
     - [3.3 Trivy Vulnerability Scans and Exception Management (Maintenance \& CI/CD)](#33-trivy-vulnerability-scans-and-exception-management-maintenance--cicd)
-    - [Reflecting on the DevOps style of work](#reflecting-on-the-devops-style-of-work)
-  - [Use of Generative AI](#use-of-generative-ai)
-  - [References](#references)
-  - [Appendix](#appendix)
+    - [3.4 Reflecting on the DevOps style of work](#34-reflecting-on-the-devops-style-of-work)
+  - [4 Use of Generative AI](#4-use-of-generative-ai)
 
 ---
 
@@ -128,7 +126,7 @@ In some cases, no matter what version we updated our dependencies to, it would s
 We learned this was an issue that we could not do anything about due to complex library dependency chains. Something we have no control over. Pull Request [#75](https://github.com/DevOps-Group-B/MiniTwit/pull/75), [#76](https://github.com/DevOps-Group-B/MiniTwit/pull/76), [#82](https://github.com/DevOps-Group-B/MiniTwit/pull/82), [#88](https://github.com/DevOps-Group-B/MiniTwit/pull/88), and [#130](https://github.com/DevOps-Group-B/MiniTwit/pull/130) are examples of vulnerabilities being added to the `.trivyignore` list.
 
 
-### Reflecting on the DevOps style of work
+### 3.4 Reflecting on the DevOps style of work
 **Technical Reflection**
 In previous projects, the workflow was highly traditional. Groups would use feature branch Git workflows where they write code locally and push it to a shared repository. Live deployments were rarely needed, but the classical issue of "why doesn't it work on my machine" would often occur. The DevOps style of work has taught us the methods to avoid these issues like relying on containerization of apps using `Docker`. Getting better at using `Github Actions` for continuous integration and deployment(CI/CD) has also been a huge help when working with these bigger DevOps projects. Once the pipeline was established, code would be tested and deployed automatically, drastically reducing manual overhead. Learning about code linters, Static Code Analysis and SonarQube has also been very helpful to avoid smaller unnoticeable mistakes and in general writing better code.
 Learning `Vagrant`, and later refactor to use `Terraform` for Infrastructure as Code(IaC) has also been important to ensure our system and architecture is easily reproducible, scalable and free from manual configuration drift.
@@ -139,7 +137,7 @@ Lastly working with real servers has been very fun. Using DigitalOcean as our se
 While our DevOps tech and implementation was successful our team dynamic was a bit of a mess. The idea of DevOps is to share the responsibility, but the way the tasks was set up incentivized us to limit the number of people working at a time in order to effectively refactor the architecture in time. The big takeaway here is that doing DevOps right takes a real commitment to cross-training and pair programming. Next time around, we need to make sure everyone gets to learn and deploy and refactor the system rather than a few experts doing most of the work. 
 
 ---
-## Use of Generative AI
+## 4 Use of Generative AI
 The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible to for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we have a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: 
 
 Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f949be449ff45df60305c4f148b4)
@@ -147,13 +145,3 @@ Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f
 Commit [b41b77b](https://github.com/DevOps-Group-B/MiniTwit/commit/b41b77b21f87933ad9425dac3446fd018f3bb358)
 
 Commit [16ad2ac](https://github.com/DevOps-Group-B/MiniTwit/commit/16ad2acd1c119d9a7f7fc3aa6839a56d29a438b4)
-
----
-
-## References
-
-
----
-
-## Appendix
-*(Attach supplemental materials here)*
