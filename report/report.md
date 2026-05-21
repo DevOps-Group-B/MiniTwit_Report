@@ -51,8 +51,15 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
+<<<<<<< Updated upstream
 ![Load balancer architecture](images/Deployment_architecture.png)
 *Fig. 1: Deployment Diagram of MiniTwit created with the help of Claude Code and PlantUML Online Editor*
+=======
+<figure>
+  <img src="images/loadbalancer.png" alt="Load balancer architecture">
+  <figcaption><b>Figure 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
+</figure>
+>>>>>>> Stashed changes
 
 ### 1.2 Dependencies
 
@@ -141,7 +148,7 @@ We learned this was an issue that we could not do anything about due to complex 
 
 ### 3.4 Reflecting on the DevOps style of work
 **Technical Reflection**
-In previous projects, the workflow was highly traditional. Groups would use feature branch Git workflows where they write code locally and push it to a shared repository. Live deployments were rarely needed, but the classical issue of "why doesn't it work on my machine" would often occur. The DevOps style of work has taught us the methods to avoid these issues like relying on containerization of apps using `Docker`. Getting better at using `Github Actions` for continuous integration and deployment(CI/CD) has also been a huge help when working with these bigger DevOps projects. Once the pipeline was established, code would be tested and deployed automatically, drastically reducing manual overhead. Learning about code linters, Static Code Analysis and SonarQube has also been very helpful to avoid smaller unnoticeable mistakes and in general writing better code.
+In previous projects, the workflow was highly traditional. Groups would use feature branch Git workflows where they write code locally and push it to a shared repository. Live deployments were rarely needed, but the classical issue of "why doesn't it work on my machine" would often occur. The DevOps style of work has taught us the methods to avoid these issues, like relying on containerization of apps using `Docker`. Getting better at using `Github Actions` for continuous integration and deployment (CI/CD) has also been a huge help when working with these bigger DevOps projects. Once the pipeline was established, code would be tested and deployed automatically, drastically reducing manual overhead. Learning about code linters, Static Code Analysis and SonarQube has also been very helpful to avoid smaller unnoticeable mistakes and in general writing better code.
 Learning `Vagrant`, and later refactor to use `Terraform` for Infrastructure as Code(IaC) has also been important to ensure our system and architecture is easily reproducible, scalable and free from manual configuration drift.
 
 Lastly working with real servers has been very fun. Using DigitalOcean as our server provider has been very easy and efficient. The next step to full ownership and more privacy is to deploy on a private server like a raspberry pi or an old laptop.
@@ -151,7 +158,7 @@ While our DevOps tech and implementation was successful our team dynamic was a b
 
 ---
 ## 4 Use of Generative AI - broh
-The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we had a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: This was the same experience when setting up the High Availability setups. 
+The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help us generate the SQL scripts to manually go on the database server to correct the type mismatches. It was very successful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we had a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: This was the same experience when setting up the High Availability setups. 
 
 Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f949be449ff45df60305c4f148b4)
 
