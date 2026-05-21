@@ -4,7 +4,7 @@
 | Name | Email |
 | :--- | :--- |
 | Bror Yang Nan Hansen | `broh@itu.dk` |
-| Carl Andersen Stilvén| `csti@itu.dk` |
+| Carl Anders Stilvén| `csti@itu.dk` |
 | Carl Frederik Thomsen| `cfth@itu.dk` |
 | Konrad Meno Adolph| `koad@itu.dk` |
 | Mikkel Clausen| `mikcl@itu.dk` |
