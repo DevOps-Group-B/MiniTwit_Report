@@ -24,7 +24,7 @@
     - [2.3 Monitoring and Logging](#23-monitoring-and-logging)
     - [2.4 Security](#24-security)
     - [2.5 Availability and Scaling](#25-availability-and-scaling)
-  - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
+  - [3 Reflection Perspective - broh and cfth](#3-reflection-perspective---broh-and-cfth)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
     - [3.3 Trivy Vulnerability Scans and Exception Management (Maintenance \& CI/CD)](#33-trivy-vulnerability-scans-and-exception-management-maintenance--cicd)
@@ -106,11 +106,11 @@ We hardened security in both CI/CD and production. In CI/CD we use Semgrep and T
 We handle availability by running multiple MiniTwit containers behind a reverse proxy and using keepalived with a floating IP for failover between load balancer nodes. We handle scaling horizontally by changing the number of application instances in Ansible, which recreates containers one by one to reduce downtime. Monitoring with Prometheus and Grafana allows us to detect issues early and react before users are affected.
 
 ![Load balancer architecture](images/loadbalancer.png)
-*Fig. 3 Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
+*Fig. 3 Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made with the help of Github ~~CoPilot~~*
 
 ---
 
-## 3 Reflection Perspective - broh
+## 3 Reflection Perspective - broh and cfth
 ### 3.1 Group Coordination and Task Management (Evolution & Refactoring)
 During the refactoring phases of the system, the primary challenge was falling behind. The structure of the tasks were often interdependent on each other making it hard to delegate tasks out in a way where pair programming could be taken advantage of. An attempt at mob programming with a rotating driver and navigator was made in the beginning but was unsuccessful, as some people would lose focus just listening. Our solution was to limit active development to a maximum of 2-3 team members concurrently while the remaining members would focus on asynchronous tasks like doing the exercises to understand the eventual pull request they would review later. 
 
