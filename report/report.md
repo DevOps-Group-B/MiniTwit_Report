@@ -4,10 +4,10 @@
 | Name | Email |
 | :--- | :--- |
 | Bror Yang Nan Hansen | `broh@itu.dk` |
-| Carl | `csti@itu.dk` |
-| Carl | `cfth@itu.dk` |
-| Konrad | `koad@itu.dk` |
-| Mikkel | `mikcl@itu.dk` |
+| Carl Andersen Stilvén| `csti@itu.dk` |
+| Carl Frederik Thomsen| `cfth@itu.dk` |
+| Konrad Meno Adolph| `koad@itu.dk` |
+| Mikkel Clausen| `mikcl@itu.dk` |
 
 ---
 
@@ -15,10 +15,10 @@
 - [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
   - [1 System's Perspective](#1-systems-perspective)
-    - [1.1 Design and Architecture](#11-design-and-architecture)
+    - [1.1 Design and Architecture - csti](#11-design-and-architecture---csti)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
-  - [2 Process' Perspective](#2-process-perspective)
+  - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
   - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
@@ -30,7 +30,7 @@
 
 ## 1 System's Perspective
 
-### 1.1 Design and Architecture
+### 1.1 Design and Architecture - csti
 
 The ITU-MiniTwit application is written in **C#** using **ASP.NET Core 9.0** with **Entity Framework Core 8.0**, deployed on **DigitalOcean** infrastructure with a **PostgreSQL 16** database backend.
 
@@ -48,7 +48,7 @@ The architecture also includes systems for monitoring and logging. Prometheus sc
 
 <figure>
   <img src="images/loadbalancer.png" alt="Load balancer architecture">
-  <figcaption><b>Figur 1:</b> Oversigt over load balancer arkitektur med active-passive failover via Nginx, Keepalived og DigitalOcean Floating IP.</figcaption>
+  <figcaption><b>Figur 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
 </figure>
 
 ### 1.2 Dependencies
@@ -81,7 +81,7 @@ While the infrastructure is stable, static analysis reports from SonarQube and C
 
 ---
 
-## 2 Process' Perspective
+## 2 Process' Perspective - koad and mikcl
 The CI/CD pipeline begins when code is pushed through a pull request. In GitHub Actions, the repository is checked out, .NET is configured, and code quality checks are run with dotnet format and hadolint. Semgrep is also executed to detect common security issues early. After these checks, the project is built with dotnet build, Playwright is installed for end-to-end testing, and xUnit is used for both unit and integration tests. If any step fails, deployment is stopped. When everything passes, Docker images for Prometheus and Grafana are built, scanned with Trivy, and pushed to Docker Hub with a version tag. Finally, GitHub Actions connects to the production server over SSH, pulls the new image, and restarts the container so the updated version goes live.
 
 The Ansible playbook starts by preparing the database server with PostgreSQL; already installed packages are not reinstalled. It also restricts database access to application nodes and creates the MiniTwit database and user. Next, it prepares the web and monitoring hosts by installing Docker, creating shared networks and volumes, and deploying the application alongside Prometheus, Loki, Alloy, Grafana, and the reverse proxy. For high availability, the playbook configures keepalived and failover scripts so the floating IP can move automatically if a node fails.
@@ -138,7 +138,7 @@ While our DevOps tech and implementation was successful our team dynamic was a b
 
 ---
 ## 4 Use of Generative AI - broh
-The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible to for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we have a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: 
+The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we have a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: This was the same experience when setting up the High Availability setups. 
 
 Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f949be449ff45df60305c4f148b4)
 
