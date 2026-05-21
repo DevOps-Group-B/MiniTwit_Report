@@ -34,7 +34,8 @@ jobs:
             --resource-path report \
             --variable geometry:margin=1in \
             --variable fontsize=11pt \
-            --variable colorlinks=true \
+            --variable urlcolor=blue
+            --variable linkcolor=black
 
       - name: Verify PDF was created
         run: |
