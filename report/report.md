@@ -51,15 +51,8 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
-<<<<<<< Updated upstream
 ![Load balancer architecture](images/Deployment_architecture.png)
 *Fig. 1: Deployment Diagram of MiniTwit created with the help of Claude Code and PlantUML Online Editor*
-=======
-<figure>
-  <img src="images/loadbalancer.png" alt="Load balancer architecture">
-  <figcaption><b>Figure 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
-</figure>
->>>>>>> Stashed changes
 
 ### 1.2 Dependencies
 
@@ -98,7 +91,7 @@ The CI/CD pipeline begins when code is pushed through a pull request. In GitHub 
 
 ![Load balancer architecture](images/CI_CD%20Pipeline.png)
 
-*Fig. 1: CI/CD Pipeline - Created with the help of Claude Code and PlantUML Online Editor*
+*Fig. 2: CI/CD Pipeline - Created with the help of Claude Code and PlantUML Online Editor*
 
 ### 2.2 Ansible Deployment
 The Ansible playbook starts by preparing the database server with PostgreSQL; already installed packages are not reinstalled. It also restricts database access to application nodes and creates the MiniTwit database and user. Next, it prepares the web and monitoring hosts by installing Docker, creating shared networks and volumes, and deploying the application alongside Prometheus, Loki, Alloy, Grafana, and the reverse proxy. For high availability, the playbook configures keepalived and failover scripts so the floating IP can move automatically if a node fails.
@@ -113,7 +106,7 @@ We hardened security in both CI/CD and production. In CI/CD we use Semgrep and T
 We handle availability by running multiple MiniTwit containers behind a reverse proxy and using keepalived with a floating IP for failover between load balancer nodes. We handle scaling horizontally by changing the number of application instances in Ansible, which recreates containers one by one to reduce downtime. Monitoring with Prometheus and Grafana allows us to detect issues early and react before users are affected.
 
 ![Load balancer architecture](images/loadbalancer.png)
-*Fig. 1: Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
+*Fig. 3 Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
 
 ---
 
