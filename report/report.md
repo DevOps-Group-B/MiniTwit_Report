@@ -4,7 +4,7 @@
 | Name | Email |
 | :--- | :--- |
 | Bror Yang Nan Hansen | `broh@itu.dk` |
-| Carl Anders Stilvén| `csti@itu.dk` |
+| Carl Andersen Stilvén| `csti@itu.dk` |
 | Carl Frederik Thomsen| `cfth@itu.dk` |
 | Konrad Meno Adolph| `koad@itu.dk` |
 | Mikkel Clausen| `mikcl@itu.dk` |
@@ -14,16 +14,11 @@
 ## Table of Contents
 - [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
-  - [1 System's Perspective - csti](#1-systems-perspective---csti)
-    - [1.1 Design and Architecture](#11-design-and-architecture)
+  - [1 System's Perspective](#1-systems-perspective)
+    - [1.1 Design and Architecture - csti](#11-design-and-architecture---csti)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
-    - [2.1 CI/CD Pipeline](#21-cicd-pipeline)
-    - [2.2 Ansible Deployment](#22-ansible-deployment)
-    - [2.3 Monitoring and Logging](#23-monitoring-and-logging)
-    - [2.4 Security](#24-security)
-    - [2.5 Availability and Scaling](#25-availability-and-scaling)
   - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
@@ -33,9 +28,9 @@
 
 ---
 
-## 1 System's Perspective - csti
+## 1 System's Perspective
 
-### 1.1 Design and Architecture 
+### 1.1 Design and Architecture - csti
 
 The ITU-MiniTwit application is written in **C#** using **ASP.NET Core 9.0** with **Entity Framework Core 8.0**, deployed on **DigitalOcean** infrastructure with a **PostgreSQL 16** database backend.
 
@@ -51,9 +46,10 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
-![Load balancer architecture](images/loadbalancer.png)
-
-*Fig. 1: Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
+<figure>
+  <img src="images/loadbalancer.png" alt="Load balancer architecture">
+  <figcaption><b>Figur 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
+</figure>
 
 ### 1.2 Dependencies
 
@@ -112,7 +108,7 @@ During the refactoring phases of the system, the primary challenge was falling b
 
 
 ### 3.2 Database Migration and Syntax Clashes (Operation)
-The primary technical challenge was migrating our database from SQLite to PostgreSQL while trying to achieve as little downtime in our system as possible. To achieve this a tool called `pgloader` was used which makes it possible to load data from a SQLite database directly into a postgres database. Initially the migration went very well. A new DigitalOcean droplet and a clean postgres database was created. `pgloader` commands were then used to migrate the data itself and it all worked out. That was until a couple days later when the status overview dashboard graphs displayed a sudden surge in failed message requests as well as user registration requests. The culprit was the different type safety the two databases use.
+The primary technical challenge was migrating our database from SQLite to PostgreSQL while trying to achieve as little downtime in our system as possible. To achieve this, a tool called `pgloader` was used which makes it possible to load data from a SQLite database directly into a postgres database. Initially the migration went very well. A new DigitalOcean droplet and a clean postgres database was created. `pgloader` commands were then used to migrate the data itself and it all worked out. That was until a couple of days later when the status overview dashboard graphs displayed a sudden surge in failed message requests as well as user registration requests. The culprit was the different type safety the two databases use.
 
 SQLite uses very loose and forgiving data types, whereas PostgreSQL is very strict. This results in mismatches in the database where PostgreSQL expects a certain type which wasn't translated by pgloader. A good example is the Cheep.Timestamp: 
 
@@ -126,9 +122,9 @@ The solution to these issues was creating AI-assisted SQL `ALTER` scripts to cor
 
 
 ### 3.3 Trivy Vulnerability Scans and Exception Management (Maintenance & CI/CD)
-Another major issue were false positive. Trivy works by scanning all dependencies that are used in the project. If any of the libraries used have been found to have a vulnerability the CI/CD pipeline will fail. Even when updating the dependencies to a newer version that Trivy suggested, the issue reoccurred. The problem was realizing that Trivy stops the pipeline due to *transitive* dependency vulnerabilities existing deeper within third-party libraries that are used by the direct dependencies we used.
+Another major issue were false positives. Trivy works by scanning all dependencies that are used in the project. If any of the libraries used have been found to have a vulnerability the CI/CD pipeline will fail. Even when updating the dependencies to a newer version that Trivy suggested, the issue reoccurred. The problem was realizing that Trivy stops the pipeline due to *transitive* dependency vulnerabilities existing deeper within third-party libraries that are used by the direct dependencies we used.
 
-In some cases, no matter what version we updated our dependencies to, it would still be flagged, essentially resulting in false positive. The solution to this was to make a `.trivyignore` file that would ignore the vulnerabilities that other libraries have in order for the CI/CD pipeline to continue.
+In some cases, no matter what version we updated our dependencies to, it would still be flagged, essentially resulting in a false positive. The solution to this was to make a `.trivyignore` file that would ignore the vulnerabilities that other libraries have in order for the CI/CD pipeline to continue.
  
  
 We learned this was an issue that we could not do anything about due to complex library dependency chains. Something we have no control over. Pull Request [#75](https://github.com/DevOps-Group-B/MiniTwit/pull/75), [#76](https://github.com/DevOps-Group-B/MiniTwit/pull/76), [#82](https://github.com/DevOps-Group-B/MiniTwit/pull/82), [#88](https://github.com/DevOps-Group-B/MiniTwit/pull/88), and [#130](https://github.com/DevOps-Group-B/MiniTwit/pull/130) are examples of vulnerabilities being added to the `.trivyignore` list.
@@ -146,7 +142,7 @@ While our DevOps tech and implementation was successful our team dynamic was a b
 
 ---
 ## 4 Use of Generative AI - broh
-The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we have a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: This was the same experience when setting up the High Availability setups. 
+The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we had a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: This was the same experience when setting up the High Availability setups. 
 
 Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f949be449ff45df60305c4f148b4)
 
