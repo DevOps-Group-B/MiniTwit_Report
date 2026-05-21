@@ -28,11 +28,11 @@ jobs:
       - name: Convert Markdown to PDF
         run: |
           pandoc report/report.md \
-            --from markdown \
+            --from markdown+raw_html \
             --to pdf \
             --output report/build/BSc_group_b.pdf \
             --resource-path report \
-            --pdf-engine=wkhtmltopdf \
+            --pdf-engine=pdflatex \
             --variable geometry:margin=1in \
             --variable fontsize=11pt \
             --variable urlcolor=blue \
