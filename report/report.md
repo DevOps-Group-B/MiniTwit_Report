@@ -1,4 +1,4 @@
-# Group B: Carls ⏰
+# Group B: Carls Alarm
 **DevOps, Software Evolution and Software Maintenance** *IT University of Copenhagen*
 
 | Name | Email |
@@ -12,19 +12,19 @@
 ---
 
 ## Table of Contents
-- [Group B: Carls ⏰](#group-b-carls-)
+- [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
   - [1 System's Perspective](#1-systems-perspective)
     - [1.1 Design and Architecture](#11-design-and-architecture)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective](#2-process-perspective)
-  - [3 Reflection Perspective](#3-reflection-perspective)
+  - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
     - [3.3 Trivy Vulnerability Scans and Exception Management (Maintenance \& CI/CD)](#33-trivy-vulnerability-scans-and-exception-management-maintenance--cicd)
     - [3.4 Reflecting on the DevOps style of work](#34-reflecting-on-the-devops-style-of-work)
-  - [4 Use of Generative AI](#4-use-of-generative-ai)
+  - [4 Use of Generative AI - broh](#4-use-of-generative-ai---broh)
 
 ---
 
@@ -97,7 +97,7 @@ We handle availability by running multiple MiniTwit containers behind a reverse 
 
 ---
 
-## 3 Reflection Perspective
+## 3 Reflection Perspective - broh
 ### 3.1 Group Coordination and Task Management (Evolution & Refactoring)
 During the refactoring phases of the system, the primary challenge was falling behind. The structure of the tasks were often interdependent on each other making it hard to delegate tasks out in a way where pair programming could be taken advantage of. An attempt at mob programming with a rotating driver and navigator was made in the beginning but was unsuccessful, as some people would lose focus just listening. Our solution was to limit active development to a maximum of 2-3 team members concurrently while the remaining members would focus on asynchronous tasks like doing the exercises to understand the eventual pull request they would review later. 
 
@@ -137,7 +137,7 @@ Lastly working with real servers has been very fun. Using DigitalOcean as our se
 While our DevOps tech and implementation was successful our team dynamic was a bit of a mess. The idea of DevOps is to share the responsibility, but the way the tasks was set up incentivized us to limit the number of people working at a time in order to effectively refactor the architecture in time. The big takeaway here is that doing DevOps right takes a real commitment to cross-training and pair programming. Next time around, we need to make sure everyone gets to learn and deploy and refactor the system rather than a few experts doing most of the work. 
 
 ---
-## 4 Use of Generative AI
+## 4 Use of Generative AI - broh
 The biggest uses of LLM models was for the migration of data, setting up High Availability setups as well as different architectures regarding IaC. We used Gemini 3.0 Pro chat to help use genereate the SQL scripts to manually go on the database server to correct the type missmatchs. It was very succesful. Secondly we also used LLMs when migrating from Vagrant to Terraform. We use Github Copilot with the "auto" model selected. This made it possible to for the model to use agents, making it able to see the whole codebase and look into files for missing information. This was however a frustrating experience as the agent created large changes that we have a hard time understanding. It also just didn't work most of the time. Some examples can be seen here: 
 
 Commit [16bcff9](https://github.com/DevOps-Group-B/MiniTwit/commit/16bcff94dc48f949be449ff45df60305c4f148b4)
