@@ -106,7 +106,7 @@ We hardened security in both CI/CD and production. In CI/CD we use Semgrep and T
 We handle availability by running multiple MiniTwit containers behind a reverse proxy and using keepalived with a floating IP for failover between load balancer nodes. We handle scaling horizontally by changing the number of application instances in Ansible, which recreates containers one by one to reduce downtime. Monitoring with Prometheus and Grafana allows us to detect issues early and react before users are affected.
 
 ![Load balancer architecture](images/loadbalancer.png)
-*Fig. 3 Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made with the help of Github ~~CoPilot~~*
+*Fig. 3 Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made with the help of Github CoPilot*
 
 ---
 
