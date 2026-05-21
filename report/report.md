@@ -4,7 +4,7 @@
 | Name | Email |
 | :--- | :--- |
 | Bror Yang Nan Hansen | `broh@itu.dk` |
-| Carl Andersen Stilvén| `csti@itu.dk` |
+| Carl Anders Stilvén| `csti@itu.dk` |
 | Carl Frederik Thomsen| `cfth@itu.dk` |
 | Konrad Meno Adolph| `koad@itu.dk` |
 | Mikkel Clausen| `mikcl@itu.dk` |
@@ -14,8 +14,8 @@
 ## Table of Contents
 - [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
-  - [1 System's Perspective](#1-systems-perspective)
-    - [1.1 Design and Architecture - csti](#11-design-and-architecture---csti)
+  - [1 System's Perspective - csti](#1-systems-perspective---csti)
+    - [1.1 Design and Architecture](#11-design-and-architecture)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
@@ -33,9 +33,9 @@
 
 ---
 
-## 1 System's Perspective
+## 1 System's Perspective - csti
 
-### 1.1 Design and Architecture - csti
+### 1.1 Design and Architecture 
 
 The ITU-MiniTwit application is written in **C#** using **ASP.NET Core 9.0** with **Entity Framework Core 8.0**, deployed on **DigitalOcean** infrastructure with a **PostgreSQL 16** database backend.
 
@@ -51,7 +51,9 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
-![Fig. 1: Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth](images/loadbalancer.png)
+![Load balancer architecture](images/loadbalancer.png)
+
+*Fig. 1: Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
 
 ### 1.2 Dependencies
 
