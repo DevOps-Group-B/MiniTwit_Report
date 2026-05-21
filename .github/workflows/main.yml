@@ -35,8 +35,6 @@ jobs:
             --variable geometry:margin=1in \
             --variable fontsize=11pt \
             --variable colorlinks=true \
-            --toc \
-            --toc-depth=3
 
       - name: Verify PDF was created
         run: |
