@@ -14,11 +14,16 @@
 ## Table of Contents
 - [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
-  - [1 System's Perspective](#1-systems-perspective)
-    - [1.1 Design and Architecture - csti](#11-design-and-architecture---csti)
+  - [1 System's Perspective - csti](#1-systems-perspective---csti)
+    - [1.1 Design and Architecture](#11-design-and-architecture)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
+    - [2.1 CI/CD Pipeline](#21-cicd-pipeline)
+    - [2.2 Ansible Deployment](#22-ansible-deployment)
+    - [2.3 Monitoring and Logging](#23-monitoring-and-logging)
+    - [2.4 Security](#24-security)
+    - [2.5 Availability and Scaling](#25-availability-and-scaling)
   - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
@@ -28,9 +33,9 @@
 
 ---
 
-## 1 System's Perspective
+## 1 System's Perspective - csti
 
-### 1.1 Design and Architecture - csti
+### 1.1 Design and Architecture 
 
 The ITU-MiniTwit application is written in **C#** using **ASP.NET Core 9.0** with **Entity Framework Core 8.0**, deployed on **DigitalOcean** infrastructure with a **PostgreSQL 16** database backend.
 
@@ -46,10 +51,8 @@ The active load balancer distributes incoming HTTP traffic across four container
 
 The architecture also includes systems for monitoring and logging. Prometheus scrapes metrics from the application instances and Node Exporters every 15 seconds, while Grafana Alloy collects and ships Docker container logs to Loki. Grafana is utilized to visualize this telemetry data. For local development and testing, a Docker Compose stack runs the entire system on a developer machine.
 
-<figure>
-  <img src="images/loadbalancer.png" alt="Load balancer architecture">
-  <figcaption><b>Figur 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
-</figure>
+![Load balancer architecture](images/Deployment_architecture.png)
+*Fig. 1: Deployment Diagram of MiniTwit created with the help of Claude Code and PlantUML Online Editor*
 
 ### 1.2 Dependencies
 
@@ -73,7 +76,7 @@ The system operates on multiple levels of abstraction, each introducing dependen
 
 ### 1.3 Current State of System
 
-The deployment process is fully automated, allowing for frequent releases with specific tagging. Our PostgreSQL 16 database runs efficiently with active connection pooling and automated weekly DigitalOcean snapshots. However, the system relies on a single dedicated droplet for data storage, introducing a single point of failure into an otherwise load-balanced setup.
+The deployment process is fully automated, allowing for frequent releases with specific tagging. Our PostgreSQL 16 database runs efficiently with active connection pooling. However, the system relies on a single dedicated droplet for data storage, introducing a single point of failure into an otherwise load-balanced setup.
 
 Our CI/CD setup blocks deployments if high-severity vulnerabilities are found. Currently, we have zero fixable issues in Semgrep or Trivy. We are tracking 25 vulnerabilities in our `.trivyignore` file, but these are all tied to transitive dependencies, where we are already running the newest available versions, meaning no patch currently exists. Additionally, while the system passes our test suite (over 85 unit tests, 20 integration tests, and 10 Playwright E2E tests), we recognize this does not cover every edge case and leaves some blind spots in our application logic.
 
@@ -85,6 +88,10 @@ While the infrastructure is stable, static analysis reports from SonarQube and C
 
 ### 2.1 CI/CD Pipeline
 The CI/CD pipeline begins when code is pushed through a pull request. In GitHub Actions, the repository is checked out, .NET is configured, and code quality checks are run with dotnet format and hadolint. Semgrep is also executed to detect common security issues early. After these checks, the project is built with dotnet build, Playwright is installed for end-to-end testing, and xUnit is used for both unit and integration tests. If any step fails, deployment is stopped. When everything passes, Docker images for Prometheus and Grafana are built, scanned with Trivy, and pushed to Docker Hub with a version tag. Finally, GitHub Actions connects to the production server over SSH, pulls the new image, and restarts the container so the updated version goes live.
+
+![Load balancer architecture](images/CI_CD%20Pipeline.png)
+
+*Fig. 1: CI/CD Pipeline - Created with the help of Claude Code and PlantUML Online Editor*
 
 ### 2.2 Ansible Deployment
 The Ansible playbook starts by preparing the database server with PostgreSQL; already installed packages are not reinstalled. It also restricts database access to application nodes and creates the MiniTwit database and user. Next, it prepares the web and monitoring hosts by installing Docker, creating shared networks and volumes, and deploying the application alongside Prometheus, Loki, Alloy, Grafana, and the reverse proxy. For high availability, the playbook configures keepalived and failover scripts so the floating IP can move automatically if a node fails.
@@ -98,6 +105,8 @@ We hardened security in both CI/CD and production. In CI/CD we use Semgrep and T
 ### 2.5 Availability and Scaling
 We handle availability by running multiple MiniTwit containers behind a reverse proxy and using keepalived with a floating IP for failover between load balancer nodes. We handle scaling horizontally by changing the number of application instances in Ansible, which recreates containers one by one to reduce downtime. Monitoring with Prometheus and Grafana allows us to detect issues early and react before users are affected.
 
+![Load balancer architecture](images/loadbalancer.png)
+*Fig. 1: Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth*
 
 ---
 
