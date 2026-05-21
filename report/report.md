@@ -19,6 +19,11 @@
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
+    - [2.1 CI/CD Pipeline](#21-cicd-pipeline)
+    - [2.2 Ansible Deployment](#22-ansible-deployment)
+    - [2.3 Monitoring and Logging](#23-monitoring-and-logging)
+    - [2.4 Security](#24-security)
+    - [2.5 Availability and Scaling](#25-availability-and-scaling)
   - [3 Reflection Perspective - broh](#3-reflection-perspective---broh)
     - [3.1 Group Coordination and Task Management (Evolution \& Refactoring)](#31-group-coordination-and-task-management-evolution--refactoring)
     - [3.2 Database Migration and Syntax Clashes (Operation)](#32-database-migration-and-syntax-clashes-operation)
@@ -48,7 +53,7 @@ The architecture also includes systems for monitoring and logging. Prometheus sc
 
 <figure>
   <img src="images/loadbalancer.png" alt="Load balancer architecture">
-  <figcaption><b>Figur 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
+  <figcaption><b>Fig. 1:</b> Summary of the load balancing architecture with active-passive failover via Nginx, Keepalived and DigitalOcean Floating IP - Made by cfth</figcaption>
 </figure>
 
 ### 1.2 Dependencies

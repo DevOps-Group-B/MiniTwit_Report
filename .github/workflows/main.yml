@@ -32,6 +32,7 @@ jobs:
             --to pdf \
             --output report/build/BSc_group_b.pdf \
             --resource-path report \
+            --pdf-engine=wkhtmltopdf \
             --variable geometry:margin=1in \
             --variable fontsize=11pt \
             --variable urlcolor=blue \
