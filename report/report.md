@@ -14,8 +14,8 @@
 ## Table of Contents
 - [Group B: Carls Alarm](#group-b-carls-alarm)
   - [Table of Contents](#table-of-contents)
-  - [1 System's Perspective](#1-systems-perspective)
-    - [1.1 Design and Architecture - csti](#11-design-and-architecture---csti)
+  - [1 System's Perspective - csti](#1-systems-perspective---csti)
+    - [1.1 Design and Architecture](#11-design-and-architecture)
     - [1.2 Dependencies](#12-dependencies)
     - [1.3 Current State of System](#13-current-state-of-system)
   - [2 Process' Perspective - koad and mikcl](#2-process-perspective---koad-and-mikcl)
